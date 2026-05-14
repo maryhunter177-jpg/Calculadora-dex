@@ -47,6 +47,8 @@ O projeto foi desenvolvido **do zero**, sem frameworks ou bibliotecas externas a
 
 ## 🚀 Como Usar
 
+PODE ACESSAR TAMBÉM PELO LINK: https://maryhunter177-jpg.github.io/Calculadora-dex/
+
 Não precisa instalar nada. Basta abrir o arquivo no navegador:
 
 ```bash
