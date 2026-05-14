@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora Pokédex</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323:wght@400&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --red: #CC0000;
+      --red-dark: #990000;
+      --red-light: #FF3333;
+      --red-shine: #FF6666;
+      --teal: #00BFAE;
+      --teal-dark: #008C7E;
+      --teal-btn: #4DD9C8;
+      --screen-bg: #9BBC0F;
+      --screen-dark: #0F380F;
+      --screen-mid: #306230;
+      --screen-light: #8BAC0F;
+      --screen-off: #1a2a0a;
+      --yellow: #FFD700;
+      --black: #111;
+      --white: #F0F0F0;
+      --gray: #888;
+      --body-bg: #1a1a2e;
+      --hinge: #AA0000;
+      --scratch: rgba(255, 255, 255, 0.06);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--body-bg);
+      background-image:
+        radial-gradient(circle at 20% 20%, #16213e 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, #0f3460 0%, transparent 50%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Press Start 2P', monospace;
+      overflow-x: hidden;
+    }
+
+    h1 {
+      color: var(--yellow);
+      font-size: 0.55rem;
+      letter-spacing: 3px;
+      margin-bottom: 18px;
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.5), 2px 2px 0 #000;
+      text-transform: uppercase;
+    }
+
+    /* ===================== POKÉDEX BODY ===================== */
+    .pokedex {
+      display: flex;
+      gap: 0;
+      filter: drop-shadow(0 20px 60px rgba(0, 0, 0, 0.8));
+      position: relative;
+    }
+
+    /* LEFT PANEL */
+    .panel-left {
+      width: 300px;
+      background: var(--red);
+      border-radius: 18px 4px 4px 18px;
+      padding: 18px 14px 18px 18px;
+      position: relative;
+      border-top: 3px solid var(--red-shine);
+      border-left: 3px solid var(--red-shine);
+      border-bottom: 3px solid var(--red-dark);
+      border-right: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* RIGHT PANEL */
+    .panel-right {
+      width: 240px;
+      background: var(--red);
+      border-radius: 4px 18px 18px 4px;
+      padding: 18px 18px 18px 14px;
+      position: relative;
+      border-top: 3px solid var(--red-shine);
+      border-right: 3px solid var(--red-shine);
+      border-bottom: 3px solid var(--red-dark);
+      border-left: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* HINGE */
+    .hinge {
+      width: 14px;
+      background: linear-gradient(to right, #880000, #CC0000, #AA0000, #880000);
+      border-top: 3px solid var(--red-shine);
+      border-bottom: 3px solid var(--red-dark);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 8px;
+      padding: 8px 2px;
+    }
+
+    .hinge-dot {
+      width: 10px;
+      height: 10px;
+      background: #660000;
+      border-radius: 50%;
+      border: 1px solid #440000;
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5);
+      align-self: center;
+    }
+
+    /* ===== TOP BAR (left) ===== */
+    .top-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .big-lens {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #a0e8ff, #00BFAE 50%, #006a60);
+      border: 4px solid white;
+      box-shadow:
+        0 0 0 3px #444,
+        inset 0 -4px 8px rgba(0, 0, 0, 0.4),
+        0 0 16px rgba(0, 191, 174, 0.5);
+      position: relative;
+      flex-shrink: 0;
+      animation: lens-glow 3s ease-in-out infinite;
+    }
+
+    .big-lens::after {
+      content: '';
+      position: absolute;
+      top: 8px;
+      left: 10px;
+      width: 12px;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.55);
+      border-radius: 50%;
+      transform: rotate(-30deg);
+    }
+
+    @keyframes lens-glow {
+
+      0%,
+      100% {
+        box-shadow: 0 0 0 3px #444, inset 0 -4px 8px rgba(0, 0, 0, 0.4), 0 0 16px rgba(0, 191, 174, 0.5);
+      }
+
+      50% {
+        box-shadow: 0 0 0 3px #444, inset 0 -4px 8px rgba(0, 0, 0, 0.4), 0 0 28px rgba(0, 191, 174, 0.9);
+      }
+    }
+
+    .status-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      box-shadow: inset 0 -2px 4px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(255, 255, 255, 0.2);
+    }
+
+    .dot-yellow {
+      background: radial-gradient(circle at 35% 30%, #FFE066, #FFB800);
+    }
+
+    .dot-green {
+      background: radial-gradient(circle at 35% 30%, #66FF88, #00CC44);
+      animation: blink 1.8s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.3;
+      }
+    }
+
+    /* ===== SCREEN ===== */
+    .screen-container {
+      background: #111;
+      border-radius: 8px;
+      padding: 6px;
+      border: 3px solid #333;
+      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.8), 0 2px 4px rgba(0, 0, 0, 0.4);
+    }
+
+    .screen {
+      background: var(--screen-bg);
+      border-radius: 4px;
+      padding: 10px;
+      min-height: 160px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+      image-rendering: pixelated;
+    }
+
+    .screen::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(0deg, transparent, transparent 2px,
+          rgba(0, 0, 0, 0.04) 2px, rgba(0, 0, 0, 0.04) 3px);
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    .screen::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 40%;
+      background: linear-gradient(to bottom, rgba(255, 255, 255, 0.08), transparent);
+      pointer-events: none;
+      z-index: 6;
+    }
+
+    .screen-mode-label {
+      font-size: 0.38rem;
+      color: var(--screen-mid);
+      letter-spacing: 1px;
+      text-align: right;
+      opacity: 0.8;
+    }
+
+    .screen-expression {
+      font-family: 'VT323', monospace;
+      font-size: 1.1rem;
+      color: var(--screen-mid);
+      text-align: right;
+      min-height: 22px;
+      word-break: break-all;
+      line-height: 1.2;
+      opacity: 0.85;
+    }
+
+    .screen-result {
+      font-family: 'VT323', monospace;
+      font-size: 2.8rem;
+      color: var(--screen-dark);
+      text-align: right;
+      line-height: 1;
+      text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.2);
+      word-break: break-all;
+      overflow: hidden;
+    }
+
+    .screen-history {
+      font-family: 'VT323', monospace;
+      font-size: 0.75rem;
+      color: var(--screen-mid);
+      text-align: right;
+      opacity: 0.6;
+      min-height: 14px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* ===== LEFT CONTROLS ===== */
+    .left-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .d-pad-container {
+      position: relative;
+      width: 64px;
+      height: 64px;
+      flex-shrink: 0;
+    }
+
+    .d-pad-h,
+    .d-pad-v {
+      position: absolute;
+      background: var(--black);
+      border-radius: 3px;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.6), 0 1px 1px rgba(255, 255, 255, 0.1);
+    }
+
+    .d-pad-h {
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 64px;
+      height: 22px;
+    }
+
+    .d-pad-v {
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 22px;
+      height: 64px;
+    }
+
+    .d-pad-center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 22px;
+      height: 22px;
+      background: #222;
+      border-radius: 2px;
+      z-index: 2;
+    }
+
+    .action-btns {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .action-row {
+      display: flex;
+      gap: 5px;
+    }
+
+    .action-btn {
+      padding: 4px 7px;
+      border: none;
+      border-radius: 3px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.38rem;
+      cursor: pointer;
+      transition: all 0.1s;
+      box-shadow: 0 3px 0 rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      letter-spacing: 0;
+    }
+
+    .action-btn:active {
+      transform: translateY(2px);
+      box-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+    }
+
+    .btn-blue {
+      background: #4488FF;
+      color: white;
+    }
+
+    .btn-white {
+      background: #eee;
+      color: #333;
+    }
+
+    .btn-yellow {
+      background: var(--yellow);
+      color: #333;
+    }
+
+    /* ===== RIGHT PANEL CONTENTS ===== */
+    .velcro-strip {
+      background: #1a1a1a;
+      border-radius: 4px;
+      height: 38px;
+      background-image:
+        repeating-linear-gradient(90deg, transparent, transparent 3px, rgba(255, 255, 255, 0.03) 3px, rgba(255, 255, 255, 0.03) 4px),
+        repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255, 255, 255, 0.04) 2px, rgba(255, 255, 255, 0.04) 3px);
+      border: 1px solid #333;
+      box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.5);
+    }
+
+    /* ===== KEYPAD GRID ===== */
+    .keypad {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 5px;
+    }
+
+    .key {
+      border: none;
+      border-radius: 4px;
+      padding: 0;
+      height: 36px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.42rem;
+      cursor: pointer;
+      transition: all 0.08s;
+      position: relative;
+      letter-spacing: -0.5px;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .key:active {
+      transform: translateY(2px);
+    }
+
+    .key-teal {
+      background: linear-gradient(to bottom, var(--teal-btn), var(--teal-dark));
+      color: white;
+      box-shadow: 0 3px 0 #005a52, inset 0 1px 0 rgba(255, 255, 255, 0.25);
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+    }
+
+    .key-teal:active {
+      box-shadow: 0 1px 0 #005a52;
+    }
+
+    .key-white {
+      background: linear-gradient(to bottom, #f5f5f5, #ddd);
+      color: #222;
+      box-shadow: 0 3px 0 #aaa, inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    }
+
+    .key-white:active {
+      box-shadow: 0 1px 0 #aaa;
+    }
+
+    .key-yellow {
+      background: linear-gradient(to bottom, #FFD700, #CC9900);
+      color: #333;
+      box-shadow: 0 3px 0 #886600, inset 0 1px 0 rgba(255, 255, 255, 0.4);
+      font-size: 0.55rem;
+    }
+
+    .key-yellow:active {
+      box-shadow: 0 1px 0 #886600;
+    }
+
+    .key-dark {
+      background: linear-gradient(to bottom, #333, #1a1a1a);
+      color: var(--teal-btn);
+      box-shadow: 0 3px 0 #000, inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      font-size: 0.38rem;
+    }
+
+    .key-dark:active {
+      box-shadow: 0 1px 0 #000;
+    }
+
+    .key-red-btn {
+      background: linear-gradient(to bottom, #ff4444, #cc0000);
+      color: white;
+      box-shadow: 0 3px 0 #660000, inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    }
+
+    .key-red-btn:active {
+      box-shadow: 0 1px 0 #660000;
+    }
+
+    /* Speaker strips */
+    .speaker-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5px;
+    }
+
+    .speaker {
+      background: #111;
+      border-radius: 3px;
+      height: 18px;
+      border: 1px solid #333;
+      background-image: repeating-linear-gradient(90deg, transparent, transparent 4px,
+          #222 4px, #222 5px);
+      box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.7);
+    }
+
+    /* ===== DECORATIVE SCRATCHES ON PANELS ===== */
+    .panel-left::after,
+    .panel-right::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(125deg,
+          transparent,
+          transparent 40px,
+          var(--scratch) 40px,
+          var(--scratch) 41px);
+      border-radius: inherit;
+      pointer-events: none;
+    }
+
+    /* ===== MODE TOGGLE ===== */
+    .mode-row {
+      display: flex;
+      gap: 4px;
+    }
+
+    .mode-btn {
+      flex: 1;
+      padding: 4px 2px;
+      border: none;
+      border-radius: 3px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.3rem;
+      cursor: pointer;
+      transition: all 0.1s;
+      box-shadow: 0 2px 0 rgba(0, 0, 0, 0.4);
+      letter-spacing: 0;
+    }
+
+    .mode-btn.active {
+      background: var(--yellow);
+      color: #222;
+      box-shadow: 0 1px 0 #886600, 0 0 8px rgba(255, 215, 0, 0.4);
+    }
+
+    .mode-btn:not(.active) {
+      background: #550000;
+      color: #FF9999;
+      box-shadow: 0 2px 0 #220000;
+    }
+
+    /* ===== TOOLTIP / HISTORY LIST ===== */
+    .history-panel {
+      position: absolute;
+      top: -10px;
+      right: -220px;
+      width: 200px;
+      background: #0a0a1a;
+      border: 2px solid var(--teal-dark);
+      border-radius: 8px;
+      padding: 10px;
+      font-family: 'VT323', monospace;
+      font-size: 0.8rem;
+      color: var(--teal-btn);
+      z-index: 100;
+      display: none;
+      flex-direction: column;
+      gap: 4px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.8);
+    }
+
+    .history-panel.open {
+      display: flex;
+    }
+
+    .history-panel h3 {
+      font-size: 0.38rem;
+      color: var(--yellow);
+      margin-bottom: 4px;
+      font-family: 'Press Start 2P', monospace;
+    }
+
+    .hist-item {
+      border-bottom: 1px solid rgba(0, 191, 174, 0.2);
+      padding-bottom: 3px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      opacity: 0.8;
+    }
+
+    .hist-item:hover {
+      opacity: 1;
+      color: white;
+    }
+
+    .hist-item:last-child {
+      border-bottom: none;
+    }
+
+    /* ===== PULSE ON EQUALS ===== */
+    @keyframes screen-flash {
+      0% {
+        background: var(--screen-bg);
+      }
+
+      30% {
+        background: #c8e06f;
+      }
+
+      100% {
+        background: var(--screen-bg);
+      }
+    }
+
+    .screen.flash {
+      animation: screen-flash 0.25s ease;
+    }
+
+    /* ===== ERROR SHAKE ===== */
+    @keyframes shake {
+
+      0%,
+      100% {
+        transform: translateX(0);
+      }
+
+      20% {
+        transform: translateX(-6px);
+      }
+
+      40% {
+        transform: translateX(6px);
+      }
+
+      60% {
+        transform: translateX(-4px);
+      }
+
+      80% {
+        transform: translateX(4px);
+      }
+    }
+
+    .screen.error {
+      animation: shake 0.35s ease;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 600px) {
+      .pokedex {
+        transform: scale(0.75);
+        transform-origin: top center;
+      }
+
+      body {
+        padding: 10px;
+        justify-content: flex-start;
+        padding-top: 20px;
+      }
+    }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      margin-top: 24px;
+      width: 100%;
+      max-width: 560px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .footer-left {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .footer-name {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.42rem;
+      color: rgba(255, 255, 255, 0.75);
+      letter-spacing: 2px;
+    }
+
+    .footer-sub {
+      font-family: 'VT323', monospace;
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.3);
+      letter-spacing: 1px;
+    }
+
+    .footer-badge {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.28rem;
+      color: var(--teal-btn);
+      letter-spacing: 1px;
+      border: 1px solid var(--teal-dark);
+      padding: 3px 6px;
+      border-radius: 3px;
+      opacity: 0.7;
+    }
+
+    /* ===== GENGAR PIXEL ART on screen ===== */
+    .gengar-sprite {
+      position: absolute;
+      bottom: 6px;
+      left: 8px;
+      image-rendering: pixelated;
+      opacity: 0.55;
+      z-index: 2;
+      animation: gengar-float 2.5s ease-in-out infinite;
+    }
+
+    @keyframes gengar-float {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-3px);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>★ Calculadora Pokédex ★</h1>
+
+  <div class="pokedex">
+
+    <!-- ======== LEFT PANEL ======== -->
+    <div class="panel-left">
+      <!-- Top bar with lens and dots -->
+      <div class="top-bar">
+        <div class="big-lens"></div>
+        <div class="status-dots">
+          <div class="dot dot-yellow"></div>
+          <div class="dot dot-green"></div>
+        </div>
+      </div>
+
+      <!-- Screen -->
+      <div class="screen-container">
+        <div class="screen" id="screen">
+          <div class="screen-mode-label" id="modeLabel">BÁSICO</div>
+          <div class="screen-history" id="historyLine"></div>
+          <div class="screen-expression" id="expression"></div>
+          <div class="screen-result" id="result">0</div>
+          <!-- Gengar pixel art -->
+          <canvas class="gengar-sprite" id="gengarCanvas" width="32" height="32"
+            style="width:32px;height:32px;"></canvas>
+        </div>
+      </div>
+
+      <!-- D-pad + action buttons -->
+      <div class="left-controls">
+        <div class="d-pad-container">
+          <div class="d-pad-h"></div>
+          <div class="d-pad-v"></div>
+          <div class="d-pad-center"></div>
+        </div>
+        <div class="action-btns">
+          <div class="action-row">
+            <button class="action-btn btn-white" onclick="toggleHistory()">LOG</button>
+            <button class="action-btn btn-blue" onclick="memorySave()">M+</button>
+            <button class="action-btn btn-blue" onclick="memoryRecall()">MR</button>
+          </div>
+          <div class="action-row">
+            <button class="action-btn btn-yellow" onclick="memoryAdd()">M±</button>
+            <button class="action-btn btn-white" onclick="memoryClear()">MC</button>
+            <button class="action-btn btn-white" onclick="toggleAngle()">DEG</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- History panel floating -->
+      <div class="history-panel" id="historyPanel">
+        <h3>◄ HISTÓRICO ►</h3>
+        <div id="historyList"></div>
+      </div>
+    </div>
+
+    <!-- ======== HINGE ======== -->
+    <div class="hinge">
+      <div class="hinge-dot"></div>
+      <div class="hinge-dot"></div>
+      <div class="hinge-dot"></div>
+    </div>
+
+    <!-- ======== RIGHT PANEL ======== -->
+    <div class="panel-right">
+      <!-- Velcro / texture strip -->
+      <div class="velcro-strip"></div>
+
+      <!-- Mode selector -->
+      <div class="mode-row">
+        <button class="mode-btn active" id="modeBasico" onclick="setMode('basico')">BÁSICO</button>
+        <button class="mode-btn" id="modeCientifico" onclick="setMode('cientifico')">CIENT.</button>
+        <button class="mode-btn" id="modeProg" onclick="setMode('prog')">PROG</button>
+      </div>
+
+      <!-- Main keypad -->
+      <div class="keypad" id="keypad">
+        <!-- will be filled by JS -->
+      </div>
+
+      <!-- Speaker grilles -->
+      <div class="speaker-row">
+        <div class="speaker"></div>
+        <div class="speaker"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer class="footer">
+    <div class="footer-left">
+      <span class="footer-name">Desenvolvido por Mary Hunter</span>
+      <span class="footer-sub">© 2020 · Todos os direitos reservados</span>
+    </div>
+    <span class="footer-badge">POKÉDEX CALC v2.0</span>
+  </footer>
+
+  <script>
+    // ==================== STATE ====================
+    let display = '0';
+    let expression = '';
+    let history = [];
+    let memory = 0;
+    let angleMode = 'DEG'; // DEG or RAD
+    let currentMode = 'basico';
+    let lastResult = null;
+    let historyOpen = false;
+    let justCalculated = false;
+
+    // ==================== ANGLE ====================
+    function toRad(x) { return angleMode === 'DEG' ? x * Math.PI / 180 : x; }
+    function fromRad(x) { return angleMode === 'DEG' ? x * 180 / Math.PI : x; }
+
+    // ==================== DISPLAY ====================
+    function updateDisplay() {
+      const res = document.getElementById('result');
+      const exp = document.getElementById('expression');
+      const hist = document.getElementById('historyLine');
+
+      res.textContent = display;
+      exp.textContent = expression;
+
+      // font size auto-shrink
+      const len = display.length;
+      res.style.fontSize = len > 12 ? '1.6rem' : len > 8 ? '2rem' : '2.8rem';
+    }
+
+    function flashScreen(type = 'flash') {
+      const s = document.getElementById('screen');
+      s.classList.remove('flash', 'error');
+      void s.offsetWidth;
+      s.classList.add(type);
+      setTimeout(() => s.classList.remove(type), 400);
+    }
+
+    // ==================== INPUT ====================
+    function pressKey(val) {
+      if (val === 'C') { clear(); return; }
+      if (val === '⌫') { backspace(); return; }
+      if (val === '=') { calculate(); return; }
+      if (val === '±') { negate(); return; }
+      if (val === '.') { addDecimal(); return; }
+      if (val === '%') { percent(); return; }
+
+      // Scientific ops
+      const sciOps = ['sin', 'cos', 'tan', 'asin', 'acos', 'atan', '√', '∛', 'x²', 'x³', 'xʸ', 'log', 'ln', 'eˣ', '10ˣ', 'π', 'e', '!', '1/x', 'abs'];
+      if (sciOps.includes(val)) { applyScientific(val); return; }
+
+      // Programmer ops
+      const progOps = ['HEX', 'DEC', 'OCT', 'BIN', 'AND', 'OR', 'XOR', 'NOT', '<<', '>>'];
+      if (progOps.includes(val)) { applyProg(val); return; }
+
+      // Parentheses
+      if (val === '(' || val === ')') { addParen(val); return; }
+
+      // Digits / ops
+      if (justCalculated && !isNaN(val)) {
+        display = '';
+        expression = '';
+        justCalculated = false;
+      }
+      if (justCalculated && ['+', '-', '×', '÷'].includes(val)) {
+        justCalculated = false;
+      }
+
+      const ops = ['+', '-', '×', '÷'];
+      if (ops.includes(val)) {
+        if (display !== '' && display !== 'ERRO') {
+          expression = display + ' ' + val;
+          display = '';
+        }
+      } else {
+        if (display === '0') display = val;
+        else if (display === 'ERRO') display = val;
+        else display += val;
+      }
+      updateDisplay();
+    }
+
+    function clear() {
+      display = '0';
+      expression = '';
+      updateDisplay();
+    }
+
+    function backspace() {
+      if (display.length <= 1 || display === 'ERRO') { display = '0'; }
+      else { display = display.slice(0, -1); }
+      updateDisplay();
+    }
+
+    function addDecimal() {
+      if (!display.includes('.')) display += '.';
+      updateDisplay();
+    }
+
+    function negate() {
+      if (display !== '0' && display !== 'ERRO') {
+        display = display.startsWith('-') ? display.slice(1) : '-' + display;
+        updateDisplay();
+      }
+    }
+
+    function percent() {
+      const n = parseFloat(display);
+      if (!isNaN(n)) { display = String(n / 100); updateDisplay(); }
+    }
+
+    function addParen(p) {
+      if (p === '(') {
+        expression += '(';
+      } else {
+        expression += display + ')';
+        display = '';
+      }
+      updateDisplay();
+    }
+
+    // ==================== CALCULATE ====================
+    function calculate() {
+      try {
+        let expr = expression + display;
+        // Replace visual symbols with JS operators
+        expr = expr.replace(/×/g, '*').replace(/÷/g, '/');
+
+        // Safety check
+        if (/[^0-9+\-*/().%, ]/.test(expr.replace(/[eE]/g, ''))) throw new Error();
+
+        let result = Function('"use strict"; return (' + expr + ')')();
+
+        if (!isFinite(result)) throw new Error();
+
+        const histItem = expr + ' = ' + formatNum(result);
+        history.unshift(histItem);
+        if (history.length > 20) history.pop();
+
+        document.getElementById('historyLine').textContent = expression + display;
+        expression = '';
+        lastResult = result;
+        display = formatNum(result);
+        justCalculated = true;
+        flashScreen('flash');
+        updateDisplay();
+      } catch (e) {
+        display = 'ERRO';
+        flashScreen('error');
+        updateDisplay();
+      }
+    }
+
+    function formatNum(n) {
+      if (Number.isInteger(n) && Math.abs(n) < 1e15) return String(n);
+      // Round to avoid floating point weirdness
+      const rounded = parseFloat(n.toPrecision(12));
+      if (Math.abs(rounded) >= 1e12 || (Math.abs(rounded) < 1e-6 && rounded !== 0)) {
+        return rounded.toExponential(6);
+      }
+      return String(parseFloat(rounded.toFixed(10)));
+    }
+
+    // ==================== SCIENTIFIC ====================
+    function applyScientific(op) {
+      const n = parseFloat(display);
+      if (isNaN(n) && !['π', 'e'].includes(op)) { display = 'ERRO'; updateDisplay(); return; }
+
+      let r;
+      switch (op) {
+        case 'sin': r = Math.sin(toRad(n)); break;
+        case 'cos': r = Math.cos(toRad(n)); break;
+        case 'tan': r = Math.tan(toRad(n)); break;
+        case 'asin': r = fromRad(Math.asin(n)); break;
+        case 'acos': r = fromRad(Math.acos(n)); break;
+        case 'atan': r = fromRad(Math.atan(n)); break;
+        case '√': r = Math.sqrt(n); break;
+        case '∛': r = Math.cbrt(n); break;
+        case 'x²': r = n * n; break;
+        case 'x³': r = n * n * n; break;
+        case 'xʸ':
+          expression = display + ' ** ';
+          display = '';
+          updateDisplay(); return;
+        case 'log': r = Math.log10(n); break;
+        case 'ln': r = Math.log(n); break;
+        case 'eˣ': r = Math.exp(n); break;
+        case '10ˣ': r = Math.pow(10, n); break;
+        case 'π': display = (display === '0' ? '' : display) + String(Math.PI); updateDisplay(); return;
+        case 'e': display = (display === '0' ? '' : display) + String(Math.E); updateDisplay(); return;
+        case '!': r = factorial(n); break;
+        case '1/x': r = 1 / n; break;
+        case 'abs': r = Math.abs(n); break;
+      }
+
+      if (r === undefined || !isFinite(r)) { display = 'ERRO'; flashScreen('error'); updateDisplay(); return; }
+
+      const histItem = op + '(' + n + ') = ' + formatNum(r);
+      history.unshift(histItem);
+      if (history.length > 20) history.pop();
+      document.getElementById('historyLine').textContent = histItem;
+
+      display = formatNum(r);
+      justCalculated = true;
+      flashScreen('flash');
+      updateDisplay();
+    }
+
+    function factorial(n) {
+      if (n < 0 || !Number.isInteger(n)) return NaN;
+      if (n > 170) return Infinity;
+      let r = 1;
+      for (let i = 2; i <= n; i++) r *= i;
+      return r;
+    }
+
+    // ==================== PROGRAMMER MODE ====================
+    function applyProg(op) {
+      const n = parseInt(display);
+      if (isNaN(n) && !['HEX', 'DEC', 'OCT', 'BIN'].includes(op)) { display = 'ERRO'; updateDisplay(); return; }
+      let r;
+      switch (op) {
+        case 'HEX': display = '0x' + Math.abs(parseInt(display)).toString(16).toUpperCase(); updateDisplay(); return;
+        case 'DEC': display = String(parseInt(display, 16) || parseInt(display)); updateDisplay(); return;
+        case 'OCT': display = '0o' + Math.abs(parseInt(display)).toString(8); updateDisplay(); return;
+        case 'BIN': display = '0b' + Math.abs(parseInt(display)).toString(2); updateDisplay(); return;
+        case 'NOT': r = ~n; break;
+        case 'AND':
+          expression = display + ' & ';
+          display = '';
+          updateDisplay(); return;
+        case 'OR':
+          expression = display + ' | ';
+          display = '';
+          updateDisplay(); return;
+        case 'XOR':
+          expression = display + ' ^ ';
+          display = '';
+          updateDisplay(); return;
+        case '<<':
+          expression = display + ' << ';
+          display = '';
+          updateDisplay(); return;
+        case '>>':
+          expression = display + ' >> ';
+          display = '';
+          updateDisplay(); return;
+      }
+      if (r !== undefined) { display = String(r); updateDisplay(); }
+    }
+
+    // ==================== MEMORY ====================
+    function memorySave() { memory = parseFloat(display) || 0; document.getElementById('historyLine').textContent = 'M = ' + memory; }
+    function memoryRecall() { display = String(memory); updateDisplay(); }
+    function memoryAdd() { memory += parseFloat(display) || 0; document.getElementById('historyLine').textContent = 'M = ' + memory; }
+    function memoryClear() { memory = 0; document.getElementById('historyLine').textContent = 'M limpa'; }
+
+    // ==================== ANGLE MODE ====================
+    function toggleAngle() {
+      angleMode = angleMode === 'DEG' ? 'RAD' : 'DEG';
+      document.querySelectorAll('.action-btn').forEach(b => {
+        if (b.textContent === 'DEG' || b.textContent === 'RAD') b.textContent = angleMode;
+      });
+    }
+
+    // ==================== HISTORY PANEL ====================
+    function toggleHistory() {
+      historyOpen = !historyOpen;
+      const p = document.getElementById('historyPanel');
+      if (historyOpen) {
+        p.classList.add('open');
+        renderHistory();
+      } else {
+        p.classList.remove('open');
+      }
+    }
+    function renderHistory() {
+      const list = document.getElementById('historyList');
+      if (history.length === 0) { list.innerHTML = '<div class="hist-item">Sem histórico</div>'; return; }
+      list.innerHTML = history.map(h => `<div class="hist-item" onclick="recallHistory('${h}')">${h}</div>`).join('');
+    }
+    function recallHistory(h) {
+      const parts = h.split(' = ');
+      if (parts.length > 1) { display = parts[parts.length - 1]; updateDisplay(); }
+      toggleHistory();
+    }
+
+    // ==================== MODES / KEYPAD ====================
+    const layouts = {
+      basico: [
+        { label: 'C', cls: 'key-red-btn' },
+        { label: '⌫', cls: 'key-dark' },
+        { label: '%', cls: 'key-teal' },
+        { label: '÷', cls: 'key-teal' },
+
+        { label: '7', cls: 'key-white' },
+        { label: '8', cls: 'key-white' },
+        { label: '9', cls: 'key-white' },
+        { label: '×', cls: 'key-teal' },
+
+        { label: '4', cls: 'key-white' },
+        { label: '5', cls: 'key-white' },
+        { label: '6', cls: 'key-white' },
+        { label: '-', cls: 'key-teal' },
+
+        { label: '1', cls: 'key-white' },
+        { label: '2', cls: 'key-white' },
+        { label: '3', cls: 'key-white' },
+        { label: '+', cls: 'key-teal' },
+
+        { label: '±', cls: 'key-dark' },
+        { label: '0', cls: 'key-white' },
+        { label: '.', cls: 'key-white' },
+        { label: '=', cls: 'key-yellow' },
+      ],
+      cientifico: [
+        { label: 'C', cls: 'key-red-btn' },
+        { label: '⌫', cls: 'key-dark' },
+        { label: '(', cls: 'key-dark' },
+        { label: ')', cls: 'key-dark' },
+
+        { label: 'sin', cls: 'key-teal' },
+        { label: 'cos', cls: 'key-teal' },
+        { label: 'tan', cls: 'key-teal' },
+        { label: '÷', cls: 'key-teal' },
+
+        { label: 'asin', cls: 'key-dark' },
+        { label: 'acos', cls: 'key-dark' },
+        { label: 'atan', cls: 'key-dark' },
+        { label: '×', cls: 'key-teal' },
+
+        { label: '√', cls: 'key-teal' },
+        { label: 'x²', cls: 'key-teal' },
+        { label: 'xʸ', cls: 'key-teal' },
+        { label: '-', cls: 'key-teal' },
+
+        { label: 'log', cls: 'key-dark' },
+        { label: 'ln', cls: 'key-dark' },
+        { label: 'eˣ', cls: 'key-dark' },
+        { label: '+', cls: 'key-teal' },
+
+        { label: 'π', cls: 'key-dark' },
+        { label: 'e', cls: 'key-dark' },
+        { label: '!', cls: 'key-dark' },
+        { label: '=', cls: 'key-yellow' },
+
+        { label: '7', cls: 'key-white' },
+        { label: '8', cls: 'key-white' },
+        { label: '9', cls: 'key-white' },
+        { label: '1/x', cls: 'key-dark' },
+
+        { label: '4', cls: 'key-white' },
+        { label: '5', cls: 'key-white' },
+        { label: '6', cls: 'key-white' },
+        { label: 'abs', cls: 'key-dark' },
+
+        { label: '1', cls: 'key-white' },
+        { label: '2', cls: 'key-white' },
+        { label: '3', cls: 'key-white' },
+        { label: '∛', cls: 'key-dark' },
+
+        { label: '±', cls: 'key-dark' },
+        { label: '0', cls: 'key-white' },
+        { label: '.', cls: 'key-white' },
+        { label: '%', cls: 'key-teal' },
+      ],
+      prog: [
+        { label: 'C', cls: 'key-red-btn' },
+        { label: '⌫', cls: 'key-dark' },
+        { label: 'HEX', cls: 'key-teal' },
+        { label: 'DEC', cls: 'key-teal' },
+
+        { label: 'OCT', cls: 'key-teal' },
+        { label: 'BIN', cls: 'key-teal' },
+        { label: 'AND', cls: 'key-dark' },
+        { label: 'OR', cls: 'key-dark' },
+
+        { label: 'XOR', cls: 'key-dark' },
+        { label: 'NOT', cls: 'key-dark' },
+        { label: '<<', cls: 'key-dark' },
+        { label: '>>', cls: 'key-dark' },
+
+        { label: '7', cls: 'key-white' },
+        { label: '8', cls: 'key-white' },
+        { label: '9', cls: 'key-white' },
+        { label: '÷', cls: 'key-teal' },
+
+        { label: '4', cls: 'key-white' },
+        { label: '5', cls: 'key-white' },
+        { label: '6', cls: 'key-white' },
+        { label: '×', cls: 'key-teal' },
+
+        { label: '1', cls: 'key-white' },
+        { label: '2', cls: 'key-white' },
+        { label: '3', cls: 'key-white' },
+        { label: '-', cls: 'key-teal' },
+
+        { label: '±', cls: 'key-dark' },
+        { label: '0', cls: 'key-white' },
+        { label: '.', cls: 'key-white' },
+        { label: '+', cls: 'key-teal' },
+
+        { label: '(', cls: 'key-dark' },
+        { label: ')', cls: 'key-dark' },
+        { label: '%', cls: 'key-teal' },
+        { label: '=', cls: 'key-yellow' },
+      ]
+    };
+
+    function setMode(mode) {
+      currentMode = mode;
+      document.getElementById('modeLabel').textContent = mode === 'basico' ? 'BÁSICO' : mode === 'cientifico' ? 'CIENTÍFICO' : 'PROGRAMADOR';
+      ['modeBasico', 'modeCientifico', 'modeProg'].forEach(id => document.getElementById(id).classList.remove('active'));
+      document.getElementById(mode === 'basico' ? 'modeBasico' : mode === 'cientifico' ? 'modeCientifico' : 'modeProg').classList.add('active');
+      renderKeypad(mode);
+    }
+
+    function renderKeypad(mode) {
+      const pad = document.getElementById('keypad');
+      const keys = layouts[mode];
+      pad.innerHTML = '';
+      keys.forEach(k => {
+        const btn = document.createElement('button');
+        btn.className = 'key ' + k.cls;
+        btn.textContent = k.label;
+        btn.addEventListener('click', () => pressKey(k.label));
+        pad.appendChild(btn);
+      });
+    }
+
+    // ==================== KEYBOARD SUPPORT ====================
+    document.addEventListener('keydown', e => {
+      const map = {
+        'Enter': '=', 'Backspace': '⌫', 'Escape': 'C',
+        '+': '+', '-': '-', '*': '×', '/': '÷',
+        '%': '%', '.': '.', '(': '(', ')': ')',
+      };
+      if (map[e.key]) { pressKey(map[e.key]); e.preventDefault(); }
+      else if (e.key >= '0' && e.key <= '9') { pressKey(e.key); }
+    });
+
+    // ==================== INIT ====================
+    renderKeypad('basico');
+    updateDisplay();
+
+    // ==================== GENGAR PIXEL ART ====================
+    (function drawGengar() {
+      const c = document.getElementById('gengarCanvas');
+      if (!c) return;
+      const ctx = c.getContext('2d');
+      // Gengar 32x32 pixel map: 0=transparent, 1=dark purple, 2=purple, 3=light purple, 4=white (eyes), 5=red (eyes)
+      const P = [
+        [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 1, 1, 2, 2, 2, 2, 2, 2, 2, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 1, 2, 2, 2, 4, 4, 4, 2, 2, 2, 2, 4, 4, 4, 2, 2, 2, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [1, 2, 2, 2, 4, 4, 4, 4, 4, 2, 2, 4, 4, 4, 4, 4, 2, 2, 2, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [1, 2, 2, 2, 4, 5, 5, 4, 4, 2, 2, 4, 4, 5, 5, 4, 2, 2, 2, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [1, 2, 2, 2, 4, 5, 5, 4, 4, 2, 2, 4, 4, 5, 5, 4, 2, 2, 2, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [1, 2, 2, 2, 2, 4, 4, 4, 2, 2, 2, 2, 4, 4, 4, 2, 2, 2, 2, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [1, 2, 2, 2, 2, 2, 4, 4, 4, 4, 4, 4, 4, 4, 4, 2, 2, 2, 2, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [1, 2, 2, 2, 2, 4, 4, 5, 5, 5, 5, 5, 5, 5, 4, 4, 2, 2, 2, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 1, 2, 2, 2, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 4, 2, 2, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 1, 2, 2, 2, 2, 4, 4, 4, 2, 2, 2, 4, 4, 4, 2, 2, 2, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 1, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [1, 2, 1, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0, 1, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [1, 1, 0, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 1, 2, 1, 2, 2, 2, 1, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 2, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      ];
+      const colors = {
+        0: null,
+        1: '#2a1850',
+        2: '#7b52a8',
+        3: '#a07cd0',
+        4: '#f0f0f0',
+        5: '#cc2222',
+      };
+      P.forEach((row, y) => {
+        row.forEach((px, x) => {
+          if (px === 0) return;
+          ctx.fillStyle = colors[px];
+          ctx.fillRect(x, y, 1, 1);
+        });
+      });
+    })();
+  </script>
+</body>
+
+</html>
